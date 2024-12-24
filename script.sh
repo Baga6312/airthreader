@@ -4,6 +4,32 @@ if [[ $EUID -ne 0 ]]; then
     exit 100
 fi
 
+
+
+
+
+# Generally playing with some functions 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Get Bssid of the access point 
 BSSID_AP=cat channel.txt -r 1:150  | grep OZONE_COFFEE_HOUSE | cut -d " " -f2 
 
