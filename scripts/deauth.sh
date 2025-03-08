@@ -1,8 +1,13 @@
 #!/bin/bash 
 
-airodump-ng --output-format csv -w airodump_output $1  >/dev/null 2>&1 &   
+if [[ $1 != ]] then 
 
-AIRODUMP_PID=$!
+	airodump-ng --output-format csv -w airodump_output $1  >/dev/null 2>&1 &   
+	AIRODUMP_PID=$!
+else 
+	printf "[-] $1 interface is not in monitor mode"
+fi 
+
 sleep 1  
 echo "[+] airodump-ng started with PID: $AIRODUMP_PID"
 
