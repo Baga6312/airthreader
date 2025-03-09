@@ -3,7 +3,9 @@
 if [[ $1 == *"mon"* ]]  then 
 	airodump-ng --output-format csv -w access_point_list $1  >/dev/null 2>&1 &   
 	AIRODUMP_PID=$!
-	sleep 7 
+
+	echo " [*] Waiting to analyse AP (10s)"
+	sleep 10
 	kill -9 $AIRODUMP_PID
 else 
 	echo " [-] No interface in monitor found"
