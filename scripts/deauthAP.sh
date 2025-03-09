@@ -1,11 +1,15 @@
 #!/bin/bash 
 
-if [[ $1 != ]] then 
+if [[ -n $1 && $1 == *"mon"* ]]  then 
 
 	airodump-ng --output-format csv -w airodump_output $1  >/dev/null 2>&1 &   
 	AIRODUMP_PID=$!
-else 
+elif [[ $1 == *"mon"* ]]  then 
 	printf "[-] $1 interface is not in monitor mode"
+	exit 1
+else  
+	printf "[-] $1 interface not found"
+	exit 1
 fi 
 
 sleep 1  

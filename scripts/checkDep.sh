@@ -6,7 +6,10 @@ dependencies=("curl" "wget" "nmap")
 
 os=$(hostnamectl | grep "Operating System:" | cut -d " " -f3) || $(cat /etc/os-release | head -n 1 | cut -d "=" -f2 | cut -d "\"" -f2 | cut -d " " -f1)  
 
-echo "installing missing dependencies on $os Linux\n" 
+printf "installing missing dependencies on $os Linux \n" 
+sleep 3 
+
+clear 
 
 	if [[ $os ]]  then  
 		case $os in 
@@ -24,3 +27,8 @@ echo "installing missing dependencies on $os Linux\n"
 				;; 
 		esac 
 	fi 
+
+
+clear
+printf "finished installing dependencies \n" 
+sleep 2 

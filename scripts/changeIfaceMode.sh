@@ -1,21 +1,17 @@
 #!/bin/bash 
 
-echo "Changing $1 to monitor mode..."
+echo ""
+echo "[*] Changing $1 to monitor mode..."
+sleep 2
 
-ifconfig $1 down 
-iwconfig $1 mode monitor
-ifconfig $1 up  
+echo ""
+echo ""
 
-#check if the interface in monitor mode 
+airmon-ng start $1  >/dev/null 2>&1 &
+echo ""
 
-mapfile -t interfaces < <(ip -br link | grep -v -e docker0 -e lo | awk '{print $1}')
+mapfile -t interfaces < <(ip -br link |cut -d " " -f1)
 
-for i in ${!interfaces[@]} ; do 
-
-	if [[ "${interfaces[i]}" == "$1" ]]; then
-		if [[ ${interfaces[i]}  != *mon* ]] ; then
-			echo "error occured , cant change to monitor mode"
-			exit 1
-		fi 
-    	fi
-done 
+if [[ ! ${interfaces[@]} =~ "$1" ]] then 
+	echo "[-] Monitor does not exists"      
+fi 
