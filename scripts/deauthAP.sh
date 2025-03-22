@@ -13,6 +13,7 @@ else
 	exit 1
 fi 
 
+
 sleep 1  
 echo "[+] airodump-ng started with PID: $AIRODUMP_PID"
 
